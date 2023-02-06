@@ -2,7 +2,6 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
 const app = express();
-const usersRouters = require("./app/routes/users");
 const meliRouters = require("./app/routes/meli");
 var cors = require("cors");
 
@@ -28,7 +27,6 @@ app.use(
 app.use(cors());
 
 //RUTAS:
-app.use(usersRouters);
 app.use(meliRouters);
 app.use(express.static(path.join(__dirname, "public")));
 

@@ -4,8 +4,21 @@ const router = express.Router();
 const path = "api";
 
 /* --------------------------------------------------------
-/* ---- GET PRODUCTS
+/* ---- SEARCH PRODUCT
+-------------------------------------------------------- */
+router.get(`/${path}/items/search/:q`, controller.searchProducts);
+
+/* --------------------------------------------------------
+/* ---- GET PRODUCTS BY ID
 -------------------------------------------------------- */
 router.get(`/${path}/items/:id`, controller.getProductByID);
+
+/* --------------------------------------------------------
+/* ---- GET PRODUCTS DESCRIPTION BY ID 
+-------------------------------------------------------- */
+router.get(
+	`/${path}/items/:id/description`,
+	controller.getProductDescriptionByID
+);
 
 module.exports = router;
