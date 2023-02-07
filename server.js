@@ -2,7 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
 const app = express();
-const meliRouters = require("./app/routes/meli");
+const V1meliRouters = require("./app/routes/v1/meli");
+const { swaggerDocs: V1SwaggerDocs } = require("./app/doc/v1/swagger");
 var cors = require("cors");
 
 //const port = process.env.PORT || 3000;
@@ -27,9 +28,10 @@ app.use(
 app.use(cors());
 
 //RUTAS:
-app.use(meliRouters);
+app.use(V1meliRouters);
 app.use(express.static(path.join(__dirname, "public")));
 
 app.listen(port, hostname, function () {
-	console.log(`Server running at http://${hostname}:${port}/`);
+	console.log(` 🚀 ✨ Server running at http://${hostname}:${port}/`);
+	V1SwaggerDocs(app, port);
 });
