@@ -12,13 +12,11 @@ const config = () => {
 
 const Service = (method, service, body) => {
 	var url = `${api_base}/${service}`;
-	console.log(url);
 	switch (method) {
 		case "GET":
 			return axios
 				.get(url, config())
 				.then((res) => {
-					console.log("MELI REST", res);
 					//return response(res)
 					return res;
 				})

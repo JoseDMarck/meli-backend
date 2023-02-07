@@ -3,6 +3,7 @@ const {
 	getDecimals,
 	productCondition,
 	productCategories,
+	productDescription,
 } = require("../utilities/utilities");
 /* --------------------------------------------------------
 /* ---- SEARCH PRODUCT
@@ -15,7 +16,7 @@ exports.searchProducts = async (req, res) => {
 	let isFilters = __MELIResponse.data.filters.length > 0; // Para saber si hay filtros y sacar categoria
 
 	if (isResults) {
-		var cleanProduct = {
+		let cleanProduct = {
 			autor: {
 				name: "Jose Ramón", // no encontre este dato :(
 				lastname: "Covarrubias Torres", // no encontre este dato :(
@@ -44,7 +45,7 @@ exports.searchProducts = async (req, res) => {
 				],
 				piture: product.thumbnail,
 				condition: productCondition(product.attributes),
-				free_shipping: true,
+				free_shipping: product.shipping.free_shipping,
 			};
 
 			cleanProduct.items.push(item);
@@ -67,15 +68,40 @@ exports.searchProducts = async (req, res) => {
 
 exports.getProductByID = async (req, res) => {
 	let ID = req.params.id;
+	let resolve = false;
 	let __MELIResponse = await Service("GET", `items/${ID}`);
 
-	if (__MELIResponse.data)
+	if (__MELIResponse.data) {
+		let product = __MELIResponse.data;
+
+		var cleanProduct = {
+			autor: {
+				name: "Jose Ramón", // no encontre este dato :(
+				lastname: "Covarrubias Torres", // no encontre este dato :(
+			},
+			item: {
+				id: product.id,
+				title: product.title,
+				price: {
+					currency: product.currency_id,
+					amount: product.price,
+					decimals: getDecimals(product.price),
+				},
+				piture: product.secure_thumbnail,
+				pitures: product.pictures,
+				condition: productCondition(product.attributes),
+				free_shipping: product.shipping.free_shipping,
+				sold_quantity: product.sold_quantity,
+				description: await productDescription(product.id),
+			},
+		};
+
 		res.status(200).json({
 			status: 200,
 			message: "Resultados encontrados",
-			response: __MELIResponse.data,
+			response: cleanProduct,
 		});
-	else
+	} else
 		res.status(200).json({
 			status: 404,
 			message: "No se encontraron productos",

@@ -1,3 +1,5 @@
+const Service = require("../services/api");
+
 /* --------------------------------------------------------
 /* ---- GET DECIMALS
 -------------------------------------------------------- */
@@ -36,11 +38,23 @@ exports.productCategories = (data) => {
 		let categories = [];
 		data.map((filter, i) => {
 			filter.path_from_root.map((cat, i) => {
-				console.log("cat ***", cat.name);
 				categories.push(cat.name);
 			});
 		});
 
 		return categories;
+	}
+};
+
+/* --------------------------------------------------------
+/* ---- GET PRODUCT DESCRIPTION 
+-------------------------------------------------------- */
+
+exports.productDescription = async (productID) => {
+	let __MELIResponse = await Service("GET", `items/${productID}/description`);
+	if (__MELIResponse.data) {
+		let description = __MELIResponse.data.plain_text;
+
+		return description;
 	}
 };
