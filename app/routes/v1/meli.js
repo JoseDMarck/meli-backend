@@ -1,5 +1,6 @@
 const express = require("express");
 const controller = require("../../controllers/meli");
+
 const router = express.Router();
 const path = "api/v1";
 
@@ -85,6 +86,36 @@ router.get(`/${path}/items/:id`, controller.getProductByID);
 router.get(
 	`/${path}/items/:id/description`,
 	controller.getProductDescriptionByID
+);
+
+/* --------------------------------------------------------
+/* ---- SEARCH PRODUCT pagination
+-------------------------------------------------------- */
+/**
+ * @openapi
+ * /api/v1/items/search/pagination/iphone/4/0:
+ *   get:
+ *     tags:
+ *       - Search Product
+ *     parameters:
+ *       - in: product name
+ *         name: iphone
+ *         schema:
+ *           type: string
+ *         description: Nombre del producto que desea buscar
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *
+ *
+ */
+router.get(
+	`/${path}/items/search/pagination/:q/:limit/:offset`,
+	controller.searchProductsPagination
 );
 
 module.exports = router;

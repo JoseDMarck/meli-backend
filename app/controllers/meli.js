@@ -36,14 +36,12 @@ exports.searchProducts = async (req, res) => {
 			let item = {
 				id: product.id,
 				title: product.title,
-				price: [
-					{
-						currency: product.currency_id,
-						amount: product.installments.amount,
-						decimals: getDecimals(product.installments.amount),
-					},
-				],
-				piture: product.thumbnail,
+				price: {
+					currency: product.currency_id,
+					amount: product.installments.amount,
+					decimals: getDecimals(product.installments.amount),
+				},
+				picture: product.thumbnail,
 				condition: productCondition(product.attributes),
 				free_shipping: product.shipping.free_shipping,
 			};
@@ -87,8 +85,8 @@ exports.getProductByID = async (req, res) => {
 					amount: product.price,
 					decimals: getDecimals(product.price),
 				},
-				piture: product.secure_thumbnail,
-				pitures: product.pictures,
+				picture: product.secure_thumbnail,
+				pictures: product.pictures,
 				condition: productCondition(product.attributes),
 				free_shipping: product.shipping.free_shipping,
 				sold_quantity: product.sold_quantity,
@@ -126,5 +124,66 @@ exports.getProductDescriptionByID = async (req, res) => {
 		res.status(200).json({
 			status: 404,
 			message: "No se encontraron productos",
+		});
+};
+
+/* --------------------------------------------------------
+/* ---- SEARCH PRODUCT PAGINATION
+-------------------------------------------------------- */
+
+exports.searchProductsPagination = async (req, res) => {
+	let query = req.params.q;
+	let limit = req.params.limit;
+	let offset = req.params.offset;
+	let __MELIResponse = await Service(
+		"GET",
+		`sites/MLA/search?q=${query}&limit=${limit}&offset=${offset}`
+	);
+	let isResults = __MELIResponse.data.results.length > 0; // Para saber si hay resultados
+	let isFilters = __MELIResponse.data.filters.length > 0; // Para saber si hay filtros y sacar categoria
+
+	if (isResults) {
+		let cleanProduct = {
+			autor: {
+				name: "Jose Ramón", // no encontre este dato :(
+				lastname: "Covarrubias Torres", // no encontre este dato :(
+			},
+			items: [],
+			categories: [],
+		};
+
+		if (isFilters) {
+			cleanProduct.categories = productCategories(
+				__MELIResponse.data.filters[0].values
+			);
+		}
+
+		__MELIResponse.data.results.map((product, i) => {
+			// ITEMS
+			let item = {
+				id: product.id,
+				title: product.title,
+				price: {
+					currency: product.currency_id,
+					amount: product.installments.amount,
+					decimals: getDecimals(product.installments.amount),
+				},
+
+				picture: product.thumbnail,
+				condition: productCondition(product.attributes),
+				free_shipping: product.shipping.free_shipping,
+			};
+
+			cleanProduct.items.push(item);
+		});
+		res.status(200).json({
+			status: 200,
+			message: "Resultados encontrados",
+			response: cleanProduct,
+		});
+	} else
+		res.status(200).json({
+			status: 404,
+			message: "No se concotraron productos",
 		});
 };
