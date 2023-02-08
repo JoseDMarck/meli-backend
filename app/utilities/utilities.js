@@ -37,9 +37,11 @@ exports.productCategories = (data) => {
 	} else {
 		let categories = [];
 		data.map((filter, i) => {
-			filter.path_from_root.map((cat, i) => {
-				categories.push(cat.name);
-			});
+			if (filter.path_from_root !== null) {
+				filter.path_from_root.map((cat, i) => {
+					categories.push(cat.name);
+				});
+			}
 		});
 
 		return categories;

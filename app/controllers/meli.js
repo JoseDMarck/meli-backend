@@ -39,6 +39,7 @@ exports.searchProducts = async (req, res) => {
 				price: {
 					currency: product.currency_id,
 					amount: product.installments.amount,
+
 					decimals: getDecimals(product.installments.amount),
 				},
 				picture: product.thumbnail,
@@ -165,8 +166,14 @@ exports.searchProductsPagination = async (req, res) => {
 				title: product.title,
 				price: {
 					currency: product.currency_id,
-					amount: product.installments.amount,
-					decimals: getDecimals(product.installments.amount),
+					amount:
+						product?.installments === null
+							? product?.price
+							: product?.installments?.amount,
+					decimals:
+						product?.installments === null
+							? getDecimals(product?.price)
+							: getDecimals(product?.installments?.amount),
 				},
 
 				picture: product.thumbnail,
