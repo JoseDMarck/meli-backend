@@ -55,7 +55,10 @@ exports.productCategories = (data) => {
 exports.productDescription = async (productID) => {
 	let __MELIResponse = await Service("GET", `items/${productID}/description`);
 	if (__MELIResponse.data) {
-		let description = __MELIResponse.data.plain_text;
+		let description = __MELIResponse.data.plain_text.replace(
+			/\n/g,
+			"<br />"
+		);
 
 		return description;
 	}

@@ -145,6 +145,7 @@ exports.searchProductsPagination = async (req, res) => {
 
 	if (isResults) {
 		let cleanProduct = {
+			pagination: __MELIResponse.data.paging,
 			autor: {
 				name: "Jose Ramón", // no encontre este dato :(
 				lastname: "Covarrubias Torres", // no encontre este dato :(
